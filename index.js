@@ -28,15 +28,24 @@ app.get("/api/", function (req, res) {
 
 app.get("/api/:date", (req, res) => {
   let str = req.params.date
+  let date, timestamp, utc
+  
   if ((/\d{5,}/).test(str)) {
     str = parseInt(str, 10)
+    date = new Date(str)
+    timestamp = date.getTime();
+    utc = date.toUTCString();
+    res.json({unix: timestamp, utc: utc});
+  } else {
+    date = new Date(str)
+    if(date.toString() === "Invalid Date") {
+      res.json({error: 'Invalid Date'})
+    } else {
+      timestamp = date.getTime();
+      utc = date.toUTCString();
+      res.json({unix: timestamp, utc: utc});
+    }
   }
-  console.log(str)
-  let date = new Date(str)
-  console.log(date)
-  let timestamp = date.getTime();
-  let utc = date.toUTCString();
-  res.json({unix: timestamp, utc: utc});
 })
 
 // listen for requests :)
